@@ -13,10 +13,6 @@ chmod +x $BUILD_DIR/vendor/cloudflared/bin/cloudflared
 
 ln -s "../vendor/cloudflared/bin/cloudflared" $BUILD_DIR/bin/cloudflared
 
-mkdir -p $BUILD_DIR/.profile.d
-cp ./cloudflared.sh $BUILD_DIR/.profile.d/
-chmod +x $BUILD_DIR/.profile.d/cloudflared.sh
-
 echo "       Done"
 
 # Copy tunnel credentials
