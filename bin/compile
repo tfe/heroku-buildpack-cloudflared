@@ -24,7 +24,10 @@ if [ -z "$CLOUDFLARED_TUNNEL" ]; then
     echo "-----> Copying cloudflared configuration..."
 
     mkdir -p $BUILD_DIR/.cloudflared
-    echo $CLOUDFLARED_CREDENTIALS > $BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL.json
+    echo $CLOUDFLARED_CREDENTIALS > "$BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL.json"
+
+    echo "cat $BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL.json"
+    cat "$BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL.json"
 
     echo "       Done"
   fi
