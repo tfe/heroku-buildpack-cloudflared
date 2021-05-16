@@ -18,3 +18,14 @@ cp ./cloudflared.sh $BUILD_DIR/.profile.d/
 chmod +x $BUILD_DIR/.profile.d/cloudflared.sh
 
 echo "       Done"
+
+if [ -z "$CLOUDFLARED_TUNNEL" ]; then
+  if [ -z "$CLOUDFLARED_CREDENTIALS" ]; then
+    echo "-----> Copying cloudflared configuration..."
+
+    mkdir -p $BUILD_DIR/.cloudflared
+    echo $CLOUDFLARED_CREDENTIALS > $BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL.json
+
+    echo "       Done"
+  fi
+fi

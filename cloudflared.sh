@@ -1,1 +1,1 @@
-bash -c "bin/cloudflared tunnel run 2>&1 &"
+bash -c "bin/cloudflared tunnel run $CLOUDFLARED_TUNNEL 2>&1 &"
