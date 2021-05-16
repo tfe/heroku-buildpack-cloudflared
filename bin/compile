@@ -8,10 +8,15 @@ ENV_DIR=$3
 echo "-----> Installing cloudflared..."
 
 mkdir -p $BUILD_DIR/vendor/cloudflared/bin
+
 cp ./cloudflared $BUILD_DIR/vendor/cloudflared/bin/cloudflared
+cp ./cloudflare $BUILD_DIR/vendor/cloudflared/bin/cloudflare
+
 chmod +x $BUILD_DIR/vendor/cloudflared/bin/cloudflared
+chmod +x $BUILD_DIR/vendor/cloudflared/bin/cloudflare
 
 ln -s "../vendor/cloudflared/bin/cloudflared" $BUILD_DIR/bin/cloudflared
+ln -s "../vendor/cloudflared/bin/cloudflare" $BUILD_DIR/bin/cloudflare
 
 echo "       Done"
 

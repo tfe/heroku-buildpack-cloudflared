@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ -z $CLOUDFLARED_TUNNEL ]; then
+  exec "$@"
+else
+  "$@" &
+  wait
+
+  cloudflared tunnel run $CLOUDFLARED_TUNNEL &
+  wait
+fi
