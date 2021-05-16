@@ -4,8 +4,6 @@ if [ -z $CLOUDFLARED_TUNNEL ]; then
   exec "$@"
 else
   cloudflared tunnel run $CLOUDFLARED_TUNNEL &
-  wait -n
-
   "$@" &
   wait -n
 fi
