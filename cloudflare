@@ -3,7 +3,7 @@
 if [ -z $CLOUDFLARED_TUNNEL ]; then
   exec "$@"
 else
-  cloudflared tunnel run $CLOUDFLARED_TUNNEL &
+  cloudflared tunnel --no-autoupdate run $CLOUDFLARED_TUNNEL &
   "$@" &
   wait -n
 fi
