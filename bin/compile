@@ -22,14 +22,14 @@ ln -s "../vendor/cloudflared/bin/cloudflare" $BUILD_DIR/bin/cloudflare
 echo "       Done"
 
 # Copy tunnel credentials
-if [ -f $ENV_DIR/CLOUDFLARED_TUNNEL ]; then
-  export "CLOUDFLARED_TUNNEL=$(cat $ENV_DIR/CLOUDFLARED_TUNNEL)"
+if [ -f $ENV_DIR/CLOUDFLARED_TUNNEL_ID ]; then
+  export "CLOUDFLARED_TUNNEL_ID=$(cat $ENV_DIR/CLOUDFLARED_TUNNEL_ID)"
 
   if [ -f $ENV_DIR/CLOUDFLARED_CREDENTIALS ]; then
     echo "-----> Copying tunnel credentials..."
 
     mkdir -p $BUILD_DIR/.cloudflared
-    cp $ENV_DIR/CLOUDFLARED_CREDENTIALS $BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL.json
+    cp $ENV_DIR/CLOUDFLARED_CREDENTIALS $BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL_ID.json
 
     echo "       Done"
   fi
