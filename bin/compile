@@ -1,11 +1,17 @@
 #!/bin/sh
 
+# Indent in Heroku push style
+# https://devcenter.heroku.com/articles/buildpack-api#bin-compile-example
+indent() {
+  sed -e 's/^/       /'
+}
+
 # Parse and derive params
 BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
-echo "-----> Installing cloudflared..."
+echo "-----> Installing cloudflared…"
 
 mkdir -p $BUILD_DIR/vendor/cloudflared/bin
 mkdir -p $BUILD_DIR/bin
@@ -19,7 +25,7 @@ chmod +x $BUILD_DIR/vendor/cloudflared/bin/cloudflare
 ln -s "../vendor/cloudflared/bin/cloudflared" $BUILD_DIR/bin/cloudflared
 ln -s "../vendor/cloudflared/bin/cloudflare" $BUILD_DIR/bin/cloudflare
 
-echo "       Done"
+echo "Done" | indent
 
 # Copy tunnel credentials
 if [ -f $ENV_DIR/CLOUDFLARED_TUNNEL_ID ]; then
@@ -31,6 +37,6 @@ if [ -f $ENV_DIR/CLOUDFLARED_TUNNEL_ID ]; then
     mkdir -p $BUILD_DIR/.cloudflared
     cp $ENV_DIR/CLOUDFLARED_CREDENTIALS $BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL_ID.json
 
-    echo "       Done"
+    echo "Done" | indent
   fi
 fi
