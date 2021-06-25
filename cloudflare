@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ -z $CLOUDFLARED_TUNNEL ]; then
+if [ -z $CF_TUNNEL_ID ]; then
   exec "$@"
 else
-  cloudflared tunnel --no-autoupdate run $CLOUDFLARED_TUNNEL &
+  cloudflared tunnel --no-autoupdate run $CF_TUNNEL_ID &
   "$@" &
   wait -n
 fi
