@@ -1,15 +1,20 @@
 #!/bin/sh
 
+set -euf -o pipefail
+
 # Indent in Heroku push style
 # https://devcenter.heroku.com/articles/buildpack-api#bin-compile-example
 indent() {
   sed -e 's/^/       /'
 }
 
-# Parse and derive params
+# 1. Parse and derive params
 BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
+
+
+# 2. Copy cloudflared binary and wrapper
 
 echo "-----> Installing cloudflared…"
 
@@ -27,16 +32,45 @@ ln -s "../vendor/cloudflared/bin/cloudflare" $BUILD_DIR/bin/cloudflare
 
 echo "Done" | indent
 
-# Copy tunnel credentials
-if [ -f $ENV_DIR/CLOUDFLARED_TUNNEL_ID ]; then
-  export "CLOUDFLARED_TUNNEL_ID=$(cat $ENV_DIR/CLOUDFLARED_TUNNEL_ID)"
 
-  if [ -f $ENV_DIR/CLOUDFLARED_CREDENTIALS ]; then
-    echo "-----> Copying tunnel credentials..."
+# 3. Copy tunnel credentials from ENV_DIR files to Cloudflare credentials JSON file
 
-    mkdir -p $BUILD_DIR/.cloudflared
-    cp $ENV_DIR/CLOUDFLARED_CREDENTIALS $BUILD_DIR/.cloudflared/$CLOUDFLARED_TUNNEL_ID.json
-
-    echo "Done" | indent
+export_env_var() {
+  printf "       $1"
+  if [ -f $ENV_DIR/$1 ]; then
+    export "$1=$(cat $ENV_DIR/$1)"
+    echo " ✔"
+  else
+    echo " ✘"
+    exit 1
   fi
-fi
+}
+
+echo "-----> Copying tunnel credentials..."
+
+export_env_var "CF_TUNNEL_ID"
+export_env_var "CF_TUNNEL_NAME"
+export_env_var "CF_TUNNEL_SECRET"
+export_env_var "CF_ACCOUNT_TAG"
+
+echo "Writing credentials JSON file" | indent
+
+mkdir -p $BUILD_DIR/.cloudflared
+
+# Construct and write Cloudflare's expected credentials JSON File
+jq -n \
+  --arg CF_TUNNEL_ID $CF_TUNNEL_ID \
+  --arg CF_TUNNEL_NAME $CF_TUNNEL_NAME \
+  --arg CF_TUNNEL_SECRET $CF_TUNNEL_SECRET \
+  --arg CF_ACCOUNT_TAG $CF_ACCOUNT_TAG \
+  '
+    {
+      "AccountTag": $CF_ACCOUNT_TAG,
+      "TunnelSecret": $CF_TUNNEL_SECRET,
+      "TunnelID": $CF_TUNNEL_ID,
+      "TunnelName": $CF_TUNNEL_NAME
+    }
+  ' \
+  > $BUILD_DIR/.cloudflared/${CF_TUNNEL_ID}.json
+
+echo "Done" | indent
