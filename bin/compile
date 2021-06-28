@@ -16,22 +16,20 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
+INSTALL_DIR=$BUILD_DIR/vendor/cloudflared/bin
+PROFILE_PATH=$BUILD_DIR/.profile.d/cloudflared.sh
 
 # 2. Copy cloudflared binary and wrapper
 
 echo "Installing cloudflared…" | header
 
-mkdir -p $BUILD_DIR/vendor/cloudflared/bin
-mkdir -p $BUILD_DIR/bin
+echo "Copying files" | indent
+mkdir -p $INSTALL_DIR
+cp ./cloudflare ./cloudflared $INSTALL_DIR
 
-cp ./cloudflared $BUILD_DIR/vendor/cloudflared/bin/cloudflared
-cp ./cloudflare $BUILD_DIR/vendor/cloudflared/bin/cloudflare
-
-chmod +x $BUILD_DIR/vendor/cloudflared/bin/cloudflared
-chmod +x $BUILD_DIR/vendor/cloudflared/bin/cloudflare
-
-ln -s "../vendor/cloudflared/bin/cloudflared" $BUILD_DIR/bin/cloudflared
-ln -s "../vendor/cloudflared/bin/cloudflare" $BUILD_DIR/bin/cloudflare
+echo "Adding cloudflared to runtime environment" | indent
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:${HOME}/vendor/cloudflared/bin"' > $PROFILE_PATH
 
 echo "Done" | indent
 
